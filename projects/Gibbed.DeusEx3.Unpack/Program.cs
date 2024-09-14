@@ -263,13 +263,22 @@ namespace Gibbed.DeusEx3.Unpack
                                               name);
                         }
 
-                        using (var output = File.Create(entryPath))
-                        {
-                            if (entry.UncompressedSize > 0)
+                        try {
+                            using (var output = File.Create(entryPath))
                             {
-                                data.Seek(entryOffset, SeekOrigin.Begin);
-                                output.WriteFromStream(data, entry.UncompressedSize);
+                                if (entry.UncompressedSize > 0)
+                                {
+                                    data.Seek(entryOffset, SeekOrigin.Begin);
+                                    output.WriteFromStream(data, entry.UncompressedSize);
+                                }
                             }
+                        }
+                        catch (Exception ex) {
+                            Console.WriteLine("Failed File write on " + entryPath);
+                            // Print the reason why it failed
+                            Console.WriteLine($"Exception occurred: {ex.Message}");
+                            // Optionally, print the stack trace for more details
+                            //Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                         }
                     }
                 }
